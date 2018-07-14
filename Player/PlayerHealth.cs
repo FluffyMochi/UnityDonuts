@@ -11,8 +11,10 @@ public class PlayerHealth : MonoBehaviour
     public Image damageImage;                                  // Reference to an image to flash on the screen on being hurt.
     public Image recoverImage;
     public AudioClip deathClip;                                 // The audio clip to play when the player dies.
-    public float flashSpeed = 5f;                               // The speed the damageImage will fade at.
-    public Color flashColour = new Color(1f, 0f, 0f, 0.1f);     // The colour the damageImage is set to, to flash.
+    public float flashSpeed_damage = 5f;                               // The speed the damageImage will fade at.
+    public float flashSpeed_recover = 50f;
+    public Color flashColour_red = new Color(1f, 0f, 0f, 0.1f);     // The colour the damageImage is set to, to flash.
+    public Color flashColour_blue = new Color(0f, 0f, 1f, 0.1f);
 
     Animator anim;                                              // Reference to the Animator component.
     AudioSource playerAudio;                                    // Reference to the AudioSource component.
@@ -22,11 +24,18 @@ public class PlayerHealth : MonoBehaviour
     bool damaged;                                               // True when the player gets damaged.
     bool recovered;
 
+    public AudioClip recoverclip;
+    public AudioClip hurtclip;
+
+    Animation playerAnime;
+    public AnimationClip gameoverclip;
+
     void Awake()
     {
         // Setting up the references.
         anim = GetComponent<Animator>();
         playerAudio = GetComponent<AudioSource>();
+        playerAnime = GetComponent<Animation>();
         playerMovement = GetComponent<PlayerMovement>();
         playerShooting = GetComponentInChildren<PlayerShooting>();
 
@@ -34,21 +43,34 @@ public class PlayerHealth : MonoBehaviour
         currentHealth = startingHealth;
     }
 
-
-    void damageUpdate()
+    void Update()
     {
-        // If the player has just been damaged...
-        if (damaged)
+        if (recovered)
         {
-            Debug.Log("damaged");
             // ... set the colour of the damageImage to the flash colour.
-            damageImage.color = flashColour;
+            recoverImage.color = flashColour_blue;
         }
         // Otherwise...
         else
         {
             // ... transition the colour back to clear.
-            damageImage.color = Color.Lerp(damageImage.color, Color.clear, flashSpeed * Time.deltaTime);
+            recoverImage.color = Color.Lerp(recoverImage.color, Color.clear, flashSpeed_recover * Time.deltaTime);
+        }
+
+        // Reset the damaged flag.
+        recovered = false;
+
+        // If the player has just been recovered...
+        if (damaged)
+        {
+            // ... set the colour of the damageImage to the flash colour.
+            damageImage.color = flashColour_red;
+        }
+        // Otherwise...
+        else
+        {
+            // ... transition the colour back to clear.
+            damageImage.color = Color.Lerp(damageImage.color, Color.clear, flashSpeed_damage * Time.deltaTime);
         }
 
         // Reset the damaged flag.
@@ -60,6 +82,9 @@ public class PlayerHealth : MonoBehaviour
     {
         // Set the damaged flag so the screen will flash.
         damaged = true;
+        playerAudio.clip = hurtclip;
+        playerAudio.Play();
+
 
         // Reduce the current health by the damage amount.
         currentHealth -= amount;
@@ -68,7 +93,6 @@ public class PlayerHealth : MonoBehaviour
         healthSlider.value = currentHealth;
 
         // Play the hurt sound effect.
-        playerAudio.Play();
 
         // If the player has lost all it's health and the death flag hasn't been set yet...
         if (currentHealth <= 0 && !isDead)
@@ -78,30 +102,13 @@ public class PlayerHealth : MonoBehaviour
         }
     }
 
-    void recoverUpdate()
-    {
-        // If the player has just been recovered...
-        if (recovered)
-        {
-            // ... set the colour of the damageImage to the flash colour.
-            recoverImage.color = flashColour;
-        }
-        // Otherwise...
-        else
-        {
-            // ... transition the colour back to clear.
-            recoverImage.color = Color.Lerp(recoverImage.color, Color.clear, flashSpeed * Time.deltaTime);
-        }
-
-        // Reset the damaged flag.
-        recovered = false;
-    }
 
     /*ここから拡張記述*/
     public void RecoverLife(int amount)
     {
         recovered = true;
-
+        playerAudio.clip = recoverclip;
+        playerAudio.Play();
 
 
 
@@ -141,6 +148,8 @@ public class PlayerHealth : MonoBehaviour
 
 
         anim.SetTrigger("GameOver");
+
+        playerAnime.Play();
 
     }
 

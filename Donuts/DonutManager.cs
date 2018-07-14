@@ -4,7 +4,7 @@ public class DonutManager : MonoBehaviour
 {
     public PlayerHealth playerHealth;       // Reference to the player's heatlh.
     public GameObject donut;                // The enemy prefab to be spawned.
-    public float spawnTime = 5f;            // How long between each spawn.
+    public float spawnTime = 500f;            // How long between each spawn.
     public Transform[] donutSpawnPoints;         // An array of the spawn points this enemy can spawn from.
 
     void Start()

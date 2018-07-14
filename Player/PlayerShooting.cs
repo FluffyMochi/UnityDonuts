@@ -19,6 +19,8 @@ public class PlayerShooting : MonoBehaviour
     float effectsDisplayTime = 0.2f;
 
 
+
+
     void Awake()
     {
         shootableMask = LayerMask.GetMask("Shootable");
@@ -64,7 +66,7 @@ public class PlayerShooting : MonoBehaviour
         gunParticles.Stop();
         gunParticles.Play();
 
-        gunLine.enabled = true;
+        gunLine.enabled = false;
         gunLine.SetPosition(0, transform.position);
 
         shootRay.origin = transform.position;
@@ -80,7 +82,6 @@ public class PlayerShooting : MonoBehaviour
                 enemyHealth.TakeDamage(damagePerShot, shootHit.point);
             }
             gunLine.SetPosition(1, shootHit.point);
-            Debug.Log(shootHit);
         }
         else
         {
@@ -88,29 +89,29 @@ public class PlayerShooting : MonoBehaviour
         }
     }
 
-    /*void RayTest()
-    {
-        //Rayの作成　　　　　　　↓Rayを飛ばす原点　　　↓Rayを飛ばす方向
-        shootRay = new Ray(player.transform.position, new Vector3(0, 0, 1));
+    /* void RayTest()
+     {
+         //Rayの作成　　　　　　　↓Rayを飛ばす原点　　　↓Rayを飛ばす方向
+         shootRay = new Ray(, new Vector3(0, 0, 1));
 
-        //Rayが当たったオブジェクトの情報を入れる箱
-        RaycastHit hit;
+         //Rayが当たったオブジェクトの情報を入れる箱
+         RaycastHit hit;
 
-        //Rayの飛ばせる距離
-        int distance = 10;
+         //Rayの飛ばせる距離
+         int distance = 10;
 
-        //Rayの可視化    ↓Rayの原点　　　　↓Rayの方向　　　　　　　　　↓Rayの色
-        Debug.DrawLine(shootRay.origin, shootRay.direction * distance, Color.red);
+         //Rayの可視化    ↓Rayの原点　　　　↓Rayの方向　　　　　　　　　↓Rayの色
+         Debug.DrawLine(shootRay.origin, shootRay.direction * distance, Color.red);
 
-        //もしRayにオブジェクトが衝突したら
-        //                  ↓Ray  ↓Rayが当たったオブジェクト ↓距離
-        if (Physics.Raycast(shootRay, out hit, distance))
-        {
-            //Rayが当たったオブジェクトのtagがPlayerだったら
-            if (hit.collider.tag == "Player")
-                Debug.Log("RayがPlayerに当たった");
-        }
-    }*/
+         //もしRayにオブジェクトが衝突したら
+         //                  ↓Ray  ↓Rayが当たったオブジェクト ↓距離
+         if (Physics.Raycast(shootRay, out hit, distance))
+         {
+             //Rayが当たったオブジェクトのtagがPlayerだったら
+             if (hit.collider.tag == "Player")
+                 Debug.Log("RayがPlayerに当たった");
+         }
+     }*/
 
 
 }
